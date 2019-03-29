@@ -22,23 +22,25 @@ const scrape = () => {
     await page.waitForSelector(".m-teaser__link.aa-teaser-catalog");
     var HTML = await page.content();
     $ = cheerio.load(HTML);
-    scrapeDatart().then(res => console.log(res));
+
     response.push({
       link: $(".m-teaser__link.aa-teaser-catalog")[0].attribs.href,
       name: "Kaufland",
       logo: "https://cdn.freebiesupply.com/logos/thumbs/2x/kaufland-logo.png"
     });
     scrapeBilla().then(res => {
-      scrapeLidl()
-        .then(res => {
-          newLinks = new Links({
-            list: response
-          });
-          console.log(response);
-          newLinks.save().then(resolved => console.log("saved"));
-          browser.close();
-        })
-        .catch(e => console.log(e));
+      scrapeDatart().then(res =>
+        scrapeLidl()
+          .then(res => {
+            newLinks = new Links({
+              list: response
+            });
+            console.log(response);
+            newLinks.save().then(resolved => console.log("saved"));
+            browser.close();
+          })
+          .catch(e => console.log(e))
+      );
     });
   })();
 
