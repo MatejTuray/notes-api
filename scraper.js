@@ -32,13 +32,27 @@ const scrape = () => {
       scrapeLidl()
         .then(res => {
           console.log("WTF DATART");
-          console.log(response.find(item => item.name === "Datart"));
-          newLinks = new Links({
-            list: response
+          axios.get("https://www.datart.sk/letak/index.html").then(res => {
+            $ = cheerio.load(res.data);
+            let partial = $("div[id=content]").children()[0];
+            let divParent = $(partial).children()[1];
+            let result = $(divParent).children()[0].attribs.src;
+            console.log(result);
+            response.push({
+              link: result,
+              name: "Datart",
+              logo:
+                "http://www.mojecity.cz/UserFiles/Image/1498071116datart.png"
+            });
           });
-          console.log(response);
-          newLinks.save().then(resolved => console.log("saved"));
-          browser.close();
+          if (response.find(item => item.name === "Datart")) {
+            newLinks = new Links({
+              list: response
+            });
+            console.log(response);
+            newLinks.save().then(resolved => console.log("saved"));
+            browser.close();
+          }
         })
         .catch(e => console.log(e));
     });
