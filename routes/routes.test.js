@@ -233,54 +233,58 @@ describe("GET api/letaky", () => {
       .end(done());
   });
 });
-describe("POST api/export", () => {
-  it("should save valid export data and send to valid email", done => {
-    let exportData = {
-      key: uuid(),
-      email: "server.personalmoviedb@gmail.com",
-      data: ["some data", "another stuff"]
-    };
-    request(app)
-      .post("/api/export")
-      .send(exportData)
-      .expect(200)
-      .expect(response => {
-        expect(response.body.response).toBe("Export successful");
-      })
-      .end(done());
-  });
-  it("should not save and send when email is invalid", done => {
-    let exportData = {
-      key: uuid(),
-      email: "server.personalmoviedb@gmailzzz.com",
-      data: ["some data", "another stuff"]
-    };
-    request(app)
-      .post("/api/export")
-      .send(exportData)
-      .expect(400)
-      .expect(response => {
-        expect(response.body.response).toBe("Invalid e-mail address provided");
-      })
-      .end(done());
-  });
-  it("should not save when key/uuid is invalid", done => {
-    let exportData = {
-      key: "1221313",
-      email: "server.personalmoviedb@gmail.com",
-      data: ["some data", "another stuff"]
-    };
-    request(app)
-      .post("/api/export")
-      .send(exportData)
-      .expect(400)
-      .expect(response => {
-        expect(response.body.response).toBe("Invalid key");
-      })
-      .end(done());
-  });
+describe("POST api/export", () => {});
+it("should save valid export data and send to valid email", done => {
+  let exportData = {
+    key: uuid(),
+    email: "server.personalmoviedb@gmail.com",
+    data: ["some data", "another stuff"],
+    duration: 2,
+    type: "multiple"
+  };
+  request(app)
+    .post("/api/export")
+    .send(exportData)
+    .expect(200)
+    .expect(response => {
+      expect(response.body.response).toBe("Export successful");
+    })
+    .end(done);
 });
-
+it("should not save and send when email is invalid", done => {
+  let exportData = {
+    key: uuid(),
+    email: "server.personalmoviedb@gmailzzz.com",
+    data: ["some data", "another stuff"],
+    duration: 2,
+    type: "multiple"
+  };
+  request(app)
+    .post("/api/export")
+    .send(exportData)
+    .expect(400)
+    .expect(response => {
+      expect(response.body.response).toBe("Invalid e-mail address provided");
+    })
+    .end(done);
+});
+it("should not save when key/uuid is invalid", done => {
+  let exportData = {
+    key: "1221313",
+    email: "server.personalmoviedb@gmail.com",
+    data: ["some data", "another stuff"],
+    duration: 2,
+    type: "multiple"
+  };
+  request(app)
+    .post("/api/export")
+    .send(exportData)
+    .expect(400)
+    .expect(response => {
+      expect(response.body.response).toBe("Invalid key");
+    })
+    .end(done);
+});
 describe("GET /api/import/:ekey", () => {
   it("should return valid data", done => {
     request(app)
@@ -288,26 +292,6 @@ describe("GET /api/import/:ekey", () => {
       .expect(200)
       .expect(response => {
         expect(response.body.data[0]).toBe("some data");
-      })
-      .end(done());
-  });
-  it("should not fetch data without uuid", done => {
-    request(app)
-      .get("/api/import/")
-      .expect(400)
-      .expect(response => {
-        expect(response.body.response).toBe("No ID provided");
-      })
-      .end(done());
-  });
-  it("should not fetch data without VALID uuid", done => {
-    request(app)
-      .get("/api/import/41415155151")
-      .expect(404)
-      .expect(response => {
-        expect(response.body.response).toBe(
-          "Unable to resolve request, data not found"
-        );
       })
       .end(done());
   });
@@ -321,5 +305,5 @@ after(done => {
     console.log(err);
   });
 
-  done;
+  done();
 });

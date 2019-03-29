@@ -27,16 +27,20 @@ const scrape = () => {
       name: "Kaufland",
       logo: "https://cdn.freebiesupply.com/logos/thumbs/2x/kaufland-logo.png"
     });
-    scrapeLidl()
-      .then(res => {
-        newLinks = new Links({
-          list: response
-        });
-        console.log(response);
-        newLinks.save().then(resolved => console.log("saved"));
-        browser.close();
-      })
-      .catch(e => console.log(e));
+    scrapeDatart().then(res => {
+      scrapeBilla().then(res => {
+        scrapeLidl()
+          .then(res => {
+            newLinks = new Links({
+              list: response
+            });
+            console.log(response);
+            newLinks.save().then(resolved => console.log("saved"));
+            browser.close();
+          })
+          .catch(e => console.log(e));
+      });
+    });
   })();
 
   // TESCO LETAK
@@ -55,13 +59,54 @@ const scrape = () => {
 
   // BILLA
 
-  let urlBilla = "https://www.billa.sk/akcie/hlavny-letak";
-  response.push({
-    link: urlBilla,
-    name: "Billa",
-    logo:
-      "http://www.mestskacast.cz/bystrc/wp-content/uploads/sites/4/2017/07/Billa_460x300px.jpg"
-  });
+  const scrapeBilla = async () => {
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    });
+    const page = await browser.newPage();
+    await page.goto("https://www.billa.sk/akcie/hlavny-letak", {
+      waitUntil: "networkidle2"
+    });
+    await page.waitForSelector("#embed-container-publitas-embed-115274");
+    var HTML = await page.content();
+    $ = cheerio.load(HTML);
+    let partialBilla = $(
+      "div[id=embed-container-publitas-embed-115274]"
+    ).children()[0].attribs.src;
+
+    response.push({
+      link: "https:" + partialBilla,
+      name: "Billa",
+      logo:
+        "http://www.mestskacast.cz/bystrc/wp-content/uploads/sites/4/2017/07/Billa_460x300px.jpg"
+    });
+    browser.close();
+  };
+
+  // DATART
+  const scrapeDatart = async () => {
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    });
+    const page = await browser.newPage();
+    await page.goto("https://www.datart.sk/letak/index.html", {
+      waitUntil: "networkidle2"
+    });
+    await page.waitForSelector("#content");
+    var HTML = await page.content();
+    $ = cheerio.load(HTML);
+    let partial = $("div[id=content]").children()[0];
+    let divParent = $(partial).children()[1];
+    let result = $(divParent).children()[0].attribs.src;
+    console.log(result);
+    response.push({
+      link: result,
+      name: "Datart",
+      logo: "http://www.mojecity.cz/UserFiles/Image/1498071116datart.png"
+    });
+    browser.close();
+  };
+
   // LIDL
   const scrapeLidl = async () => {
     const browser = await puppeteer.launch({
