@@ -29,18 +29,16 @@ const scrape = () => {
       logo: "https://cdn.freebiesupply.com/logos/thumbs/2x/kaufland-logo.png"
     });
     scrapeBilla().then(res => {
-      scrapeDatart().then(res =>
-        scrapeLidl()
-          .then(res => {
-            newLinks = new Links({
-              list: response
-            });
-            console.log(response);
-            newLinks.save().then(resolved => console.log("saved"));
-            browser.close();
-          })
-          .catch(e => console.log(e))
-      );
+      scrapeLidl()
+        .then(res => {
+          newLinks = new Links({
+            list: response
+          });
+          console.log(response);
+          newLinks.save().then(resolved => console.log("saved"));
+          browser.close();
+        })
+        .catch(e => console.log(e));
     });
   })();
 
@@ -85,18 +83,8 @@ const scrape = () => {
   };
 
   // DATART
-  const scrapeDatart = async () => {
-    const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"]
-    });
-    const page = await browser.newPage();
-    await page.goto("https://www.datart.sk/letak/index.html", {
-      waitUntil: "networkidle2",
-      timeout: 3000000
-    });
-    await page.waitForSelector("#content");
-    var HTML = await page.content();
-    $ = cheerio.load(HTML);
+  axios.get("https://www.datart.sk/letak/index.html").then(res => {
+    $ = cheerio.load(res.data);
     let partial = $("div[id=content]").children()[0];
     let divParent = $(partial).children()[1];
     let result = $(divParent).children()[0].attribs.src;
@@ -106,8 +94,7 @@ const scrape = () => {
       name: "Datart",
       logo: "http://www.mojecity.cz/UserFiles/Image/1498071116datart.png"
     });
-    browser.close();
-  };
+  });
 
   // LIDL
   const scrapeLidl = async () => {
