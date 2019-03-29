@@ -31,6 +31,8 @@ const scrape = () => {
     scrapeBilla().then(res => {
       scrapeLidl()
         .then(res => {
+          console.log("WTF DATART");
+          console.log(response.find(item => item.name === "Datart"));
           newLinks = new Links({
             list: response
           });
@@ -53,6 +55,18 @@ const scrape = () => {
       name: "Tesco",
       logo:
         "http://ignite-images.co.uk/galleries/sy-photos/2016/06/29/18/small_21435b_tesco-logo.png"
+    });
+  });
+  axios.get("https://www.datart.sk/letak/index.html").then(res => {
+    $ = cheerio.load(res.data);
+    let partial = $("div[id=content]").children()[0];
+    let divParent = $(partial).children()[1];
+    let result = $(divParent).children()[0].attribs.src;
+    console.log(result);
+    response.push({
+      link: result,
+      name: "Datart",
+      logo: "http://www.mojecity.cz/UserFiles/Image/1498071116datart.png"
     });
   });
 
@@ -83,18 +97,6 @@ const scrape = () => {
   };
 
   // DATART
-  axios.get("https://www.datart.sk/letak/index.html").then(res => {
-    $ = cheerio.load(res.data);
-    let partial = $("div[id=content]").children()[0];
-    let divParent = $(partial).children()[1];
-    let result = $(divParent).children()[0].attribs.src;
-    console.log(result);
-    response.push({
-      link: result,
-      name: "Datart",
-      logo: "http://www.mojecity.cz/UserFiles/Image/1498071116datart.png"
-    });
-  });
 
   // LIDL
   const scrapeLidl = async () => {
