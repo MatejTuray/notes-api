@@ -88,8 +88,7 @@ const scrape = () => {
   // DATART
   const scrapeDatart = async () => {
     const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      headless: false
+      args: ["--no-sandbox", "--disable-setuid-sandbox"]
     });
     const page = await browser.newPage();
     await page.goto("https://www.datart.sk/letak/index.html", {
