@@ -28,33 +28,20 @@ const scrape = () => {
       name: "Kaufland",
       logo: "https://cdn.freebiesupply.com/logos/thumbs/2x/kaufland-logo.png"
     });
-    scrapeBilla().then(res => {
-      scrapeLidl()
-        .then(res => {
-          console.log("WTF DATART");
-          axios.get("https://www.datart.sk/letak/index.html").then(res => {
-            $ = cheerio.load(res.data);
-            let partial = $("div[id=content]").children()[0];
-            let divParent = $(partial).children()[1];
-            let result = $(divParent).children()[0].attribs.src;
-            console.log(result);
-            response.push({
-              link: result,
-              name: "Datart",
-              logo:
-                "http://www.mojecity.cz/UserFiles/Image/1498071116datart.png"
-            });
-          });
-          if (response.find(item => item.name === "Datart")) {
+    scrapeDatart().then(res => {
+      console.log(res.data);
+      scrapeBilla().then(res => {
+        scrapeLidl()
+          .then(res => {
             newLinks = new Links({
               list: response
             });
             console.log(response);
             newLinks.save().then(resolved => console.log("saved"));
             browser.close();
-          }
-        })
-        .catch(e => console.log(e));
+          })
+          .catch(e => console.log(e));
+      });
     });
   })();
 
@@ -69,18 +56,6 @@ const scrape = () => {
       name: "Tesco",
       logo:
         "http://ignite-images.co.uk/galleries/sy-photos/2016/06/29/18/small_21435b_tesco-logo.png"
-    });
-  });
-  axios.get("https://www.datart.sk/letak/index.html").then(res => {
-    $ = cheerio.load(res.data);
-    let partial = $("div[id=content]").children()[0];
-    let divParent = $(partial).children()[1];
-    let result = $(divParent).children()[0].attribs.src;
-    console.log(result);
-    response.push({
-      link: result,
-      name: "Datart",
-      logo: "http://www.mojecity.cz/UserFiles/Image/1498071116datart.png"
     });
   });
 
@@ -111,6 +86,31 @@ const scrape = () => {
   };
 
   // DATART
+  const scrapeDatart = async () => {
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      headless: false
+    });
+    const page = await browser.newPage();
+    await page.goto("https://www.datart.sk/letak/index.html", {
+      waitUntil: "networkidle2"
+    });
+    await page.waitForSelector("#content");
+    var HTML = await page.content();
+    $ = cheerio.load(HTML);
+    let partial = $("div[id=content]").children()[0];
+    let divParent = $(partial).children()[1];
+    let result = $(divParent).children()[0].attribs.src;
+    console.log(result);
+    const newpage = await browser.newPage();
+    await newpage.goto(result);
+    response.push({
+      link: result,
+      name: "Datart",
+      logo: "http://www.mojecity.cz/UserFiles/Image/1498071116datart.png"
+    });
+    browser.close();
+  };
 
   // LIDL
   const scrapeLidl = async () => {
