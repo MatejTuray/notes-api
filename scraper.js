@@ -29,7 +29,6 @@ const scrape = () => {
       logo: "https://cdn.freebiesupply.com/logos/thumbs/2x/kaufland-logo.png"
     });
     scrapeDatart().then(res => {
-      console.log(res.data);
       scrapeBilla().then(res => {
         scrapeLidl()
           .then(res => {
@@ -88,11 +87,17 @@ const scrape = () => {
   // DATART
   const scrapeDatart = async () => {
     const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"]
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--proxy-server=94.136.157.73:60399",
+        "--proxy-bypass-list=<-loopback>"
+      ]
     });
     const page = await browser.newPage();
     await page.goto("https://www.datart.sk/letak/index.html", {
-      waitUntil: "networkidle2"
+      waitUntil: "networkidle2",
+      timeout: 30000000
     });
     await page.waitForSelector("#content");
     var HTML = await page.content();
@@ -101,8 +106,6 @@ const scrape = () => {
     let divParent = $(partial).children()[1];
     let result = $(divParent).children()[0].attribs.src;
     console.log(result);
-    const newpage = await browser.newPage();
-    await newpage.goto(result);
     response.push({
       link: result,
       name: "Datart",
