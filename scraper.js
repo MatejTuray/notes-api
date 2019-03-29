@@ -90,7 +90,8 @@ const scrape = () => {
     });
     const page = await browser.newPage();
     await page.goto("https://www.datart.sk/letak/index.html", {
-      waitUntil: "networkidle2"
+      waitUntil: "networkidle2",
+      timeout: 3000000
     });
     await page.waitForSelector("#content");
     var HTML = await page.content();
@@ -114,8 +115,7 @@ const scrape = () => {
     });
     const page = await browser.newPage();
     await page.goto("https://www.lidl.sk/sk/letak.htm", {
-      waitUntil: "networkidle2",
-      timeout: 3000000
+      waitUntil: "networkidle2"
     });
     await page.waitForSelector(".leafletcontainer__content");
     var HTML = await page.content();
