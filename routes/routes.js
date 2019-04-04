@@ -32,13 +32,13 @@ const client = redis.createClient(
     no_ready_check: true
   }
 );
-client.flushall((err, reply) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log(reply);
-  }
-});
+// client.flushall((err, reply) => {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log(reply);
+//   }
+// });
 const cache = require("express-redis-cache")({
   client: client
 });
