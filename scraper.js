@@ -159,7 +159,7 @@ const scrape = () => {
   //NAY
   axios.get("https://www.nay.sk/aktualny-letak").then(res => {
   $ = cheerio.load(res.data);
-  let partial = $("div[id=content]").children()[0];
+  let partial = $("div[id=content]").children()[1];
   let href = $(partial).children()[0].attribs.href
   console.log(href)
 })
