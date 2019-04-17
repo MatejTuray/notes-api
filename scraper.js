@@ -162,15 +162,12 @@ const scrape = () => {
   let partial = $("div[id=content]").children()[1];
   let href = $(partial).children()[0].attribs.href
   console.log(href)
-})
-  
-  let urlNay = "https://letaky.panoic.sk/Nay/2.html?m=1";
   response.push({
-    link: urlNay,
+    link: href,
     name: "Nay",
     logo:
       "https://www.mediahub.sk/wp-content/uploads/2016/04/stare-logo-NAY-Elektrodom.png"
   });
-};
+});
 
 module.exports.scrape = scrape;
