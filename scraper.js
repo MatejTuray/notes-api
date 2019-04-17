@@ -157,6 +157,13 @@ const scrape = () => {
     .catch(e => console.log(e));
 
   //NAY
+  axios.get("https://www.nay.sk/aktualny-letak").then(res => {
+  $ = cheerio.load(res.data);
+  let partial = $("div[id=content]").children()[0];
+  let href = $(partial).children()[0].attribs.href
+  console.log(href)
+})
+  
   let urlNay = "https://letaky.panoic.sk/Nay/2.html?m=1";
   response.push({
     link: urlNay,
