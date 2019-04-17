@@ -157,7 +157,7 @@ const scrape = () => {
     .catch(e => console.log(e));
 
   //NAY
-  let urlNay = "https://letaky.panoic.sk/Nay/1.html?m=1";
+  let urlNay = "https://letaky.panoic.sk/Nay/2.html?m=1";
   response.push({
     link: urlNay,
     name: "Nay",
