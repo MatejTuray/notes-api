@@ -90,8 +90,7 @@ const scrape = () => {
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
-        '--proxy-server=94.136.157.73:60399',
-        '--proxy-bypass-list=<-loopback>'
+      
       ]
     })
     const page = await browser.newPage()
