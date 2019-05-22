@@ -28,7 +28,7 @@ const scrape = () => {
       name: 'Kaufland',
       logo: 'https://cdn.freebiesupply.com/logos/thumbs/2x/kaufland-logo.png'
     })
-    scrapeDatart().then(res => {
+    
       scrapeBilla().then(res => {
         scrapeLidl()
           .then(res => {
@@ -41,7 +41,7 @@ const scrape = () => {
           })
           .catch(e => console.log(e))
       })
-    })
+    
   })()
 
   // TESCO LETAK
